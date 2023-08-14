@@ -26,7 +26,7 @@ const unsigned long intervalReadWaterSensor = 1000;
 
 unsigned long currentBlinkMillis;
 unsigned long previousBlinkMillis = 0;
-const unsigned long intervalBlink = 300;
+const unsigned long intervalBlink = 200;
 
 byte trong[] = {
   B00000,
@@ -95,7 +95,7 @@ void clearWarningLcd() {
   lcd.print("       ");
 }
 
-void blinkLcd() {
+void checkAndBlinkLcd() {
   if (DHT.humidity >= HUMIDITY_THRESHOLD || DHT.temperature >= TEMPERATURE_THRESHOLD || percent >= WATERLEVEL_THRESHOLD) {
     currentBlinkMillis = millis();
     printWarningLcd();
@@ -129,5 +129,5 @@ void blinkLcd() {
     readDHTSensor();
     readWaterSensor();
     printLcd();
-    blinkLcd();
+    checkAndBlinkLcd();
   }
