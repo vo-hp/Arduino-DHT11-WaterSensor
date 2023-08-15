@@ -15,6 +15,9 @@ const int TEMPERATURE_THRESHOLD = 40;
 
 bool isLcdBlinking = false;
 bool isLcdOn = false;
+bool isHumiHigherThanThreshold = false;
+bool isTempHigherThanThreshold = false;
+bool isLevelHigherThanThreshold = false;
 
 unsigned long currentReadDHTSensorMillis;
 unsigned long previousReadDHTSensorMillis = 0;
@@ -63,13 +66,13 @@ void readWaterSensor() {
 
 void printLcd() {
   percent = map(val, 0, 700, 0, 100);
-  lcd.setCursor(9, 0);
+  lcd.setCursor(0, 1); //9, 0
   lcd.print("temp:");
-  lcd.setCursor(14, 0);
+  lcd.setCursor(5, 1); //14, 0
   lcd.print(DHT.temperature);
-  lcd.setCursor(0, 1);
+  lcd.setCursor(7, 0); //0, 1
   lcd.print("level:");
-  lcd.setCursor(6, 1);
+  lcd.setCursor(13, 0);  //6, 0
   lcd.print(percent);
   if (percent < 10) {
     lcd.setCursor(7, 1);
@@ -85,6 +88,33 @@ void printLcd() {
   lcd.print(DHT.humidity);
 }
 
+void checkHumi() {
+  if(DHT.humidity >= HUMIDITY_THRESHOLD) {
+    isHumiHigherThanThreshold = true;
+  }  
+  else {
+    isHumiHigherThanThreshold = false;
+  }
+}
+
+void checkLevel() {
+  if(percent >= WATERLEVEL_THRESHOLD) {
+    isLevelHigherThanThreshold = true;
+  }  
+  else {
+    isLevelHigherThanThreshold = false;
+  }
+}
+
+void checkTemp() {
+  if(DHT.temperature >= TEMPERATURE_THRESHOLD) {
+    isTempHigherThanThreshold = true;
+  }  
+  else {
+    isTempHigherThanThreshold = false;
+  }
+}
+
 void printWarningLcd() {
   lcd.setCursor(0, 0);
   lcd.print("warning");
@@ -95,8 +125,8 @@ void clearWarningLcd() {
   lcd.print("       ");
 }
 
-void checkAndBlinkLcd() {
-  if (DHT.humidity >= HUMIDITY_THRESHOLD || DHT.temperature >= TEMPERATURE_THRESHOLD || percent >= WATERLEVEL_THRESHOLD) {
+void blinkLcd() {
+  if (isHumiHigherThanThreshold || isTempHigherThanThreshold || isLevelHigherThanThreshold) {
     currentBlinkMillis = millis();
     printWarningLcd();
     if (currentBlinkMillis - previousBlinkMillis >= intervalBlink) {
@@ -104,10 +134,12 @@ void checkAndBlinkLcd() {
       if (isLcdOn) {
         lcd.noBacklight();
         isLcdOn = false;
+        Serial.println("bat");
       } 
       else {
         lcd.backlight();
         isLcdOn = true;
+        Serial.println("tat");
       }
     } 
   }  
@@ -129,5 +161,8 @@ void checkAndBlinkLcd() {
     readDHTSensor();
     readWaterSensor();
     printLcd();
-    checkAndBlinkLcd();
+    checkHumi();
+    checkTemp();
+    checkLevel();
+    blinkLcd();
   }
