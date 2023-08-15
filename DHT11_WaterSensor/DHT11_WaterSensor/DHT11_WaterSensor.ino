@@ -66,7 +66,7 @@ void readWaterSensor() {
 
 void printLcd() {
   percent = map(val, 0, 700, 0, 100);
-  lcd.setCursor(0, 1); //9, 0
+  lcd.setCursor(0, 1); //9, 0 
   lcd.print("temp:");
   lcd.setCursor(5, 1); //14, 0
   lcd.print(DHT.temperature);
@@ -75,11 +75,11 @@ void printLcd() {
   lcd.setCursor(13, 0);  //6, 0
   lcd.print(percent);
   if (percent < 10) {
-    lcd.setCursor(7, 1);
+    lcd.setCursor(14, 0);
     lcd.write(0);
   }
   if (percent < 100) {
-    lcd.setCursor(8, 1);
+    lcd.setCursor(15, 0);
     lcd.write(0);
   }
   lcd.setCursor(9, 1);
