@@ -66,7 +66,7 @@ void readWaterSensor() {
 }
 
 void printLcd() {
-  percent = map(val, 0, 700, 0, 100);
+  percent = map(val, 0, 650, 0, 100);
   lcd.setCursor(0, 1); //9, 0 
   lcd.print("temp:");
   lcd.setCursor(5, 1); //14, 0
