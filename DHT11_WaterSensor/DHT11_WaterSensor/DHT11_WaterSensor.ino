@@ -4,12 +4,13 @@
 
 DFRobot_DHT11 DHT;
 #define DHT11_PIN 10
+#define KY_TU_TRONG 0
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 int val;
 int percent;
-const int HUMIDITY_THRESHOLD = 80;
+const int HUMIDITY_THRESHOLD = 85;
 const int WATERLEVEL_THRESHOLD = 50;
 const int TEMPERATURE_THRESHOLD = 40;
 
@@ -76,11 +77,11 @@ void printLcd() {
   lcd.print(percent);
   if (percent < 10) {
     lcd.setCursor(14, 0);
-    lcd.write(0);
+    lcd.write(KY_TU_TRONG);
   }
   if (percent < 100) {
     lcd.setCursor(15, 0);
-    lcd.write(0);
+    lcd.write(KY_TU_TRONG);
   }
   lcd.setCursor(9, 1);
   lcd.print("humi:");
@@ -153,7 +154,7 @@ void blinkLcd() {
     Serial.begin(115200);
     lcd.init();
     lcd.backlight();
-    lcd.createChar(0, trong);
+    lcd.createChar(KY_TU_TRONG, trong);
     pinMode(A0, INPUT);
   }
 
